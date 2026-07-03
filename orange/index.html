@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Статья · экономика внимания · Premium Ads </title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f7f8fa;
+      --border: rgba(20, 20, 20, 0.08);
+      --text: #141414;
+      --muted: #6c6c78;
+      --accent: #ff6e3d;
+      --accent-dim: rgba(255, 110, 61, 0.1);
+      --accent-border: rgba(255, 110, 61, 0.28);
+      --accent-gradient: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+      --dark: #141414;
+      --emerald: #16a34a;
+      --amber: #d97706;
+      --article-ratio: 3;
+      --metrics-ratio: 1;
+      --gap: 1.5rem;
+      --radius: 1.5rem;
+      --radius-sm: 1rem;
+      --metrics-max-h: 500px;
+      --mobile-metrics-offset: 6.75rem;
+      font-family: "Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-feature-settings: "lnum" 1, "pnum" 1;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html {
+      scroll-behavior: smooth;
+      height: auto;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.2;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: -0.36px;
+      min-height: 100%;
+      overflow-y: visible;
+      -webkit-text-size-adjust: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .layout {
+      display: flex;
+      align-items: stretch;
+      min-height: 100vh;
+      min-height: 100dvh;
+      max-width: 1400px;
+      margin: 0 auto;
+      overflow: visible;
+    }
+
+    .article-col {
+      flex: var(--article-ratio) 1 0;
+      min-width: 0;
+      padding: var(--gap);
+      padding-right: calc(var(--gap) * 0.5);
+    }
+
+    .metrics-col {
+      flex: var(--metrics-ratio) 0 320px;
+      max-width: 400px;
+      position: sticky;
+      top: var(--gap);
+      align-self: stretch;
+      height: auto;
+      max-height: calc(100vh - 2 * var(--gap));
+      max-height: calc(100dvh - 2 * var(--gap));
+      overflow-x: hidden;
+      overflow-y: auto;
+      margin: var(--gap) var(--gap) var(--gap) 0;
+      padding: clamp(0.65rem, 1.8cqh, 1.1rem) clamp(0.75rem, 2cqw, 1rem);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      z-index: 2;
+      container-type: size;
+      container-name: metrics;
+      --metrics-scale: clamp(0.78, 0.38 + 0.11cqh + 0.05cqw, 1.25);
+    }
+
+    @media (min-width: 901px) {
+      .metrics-head {
+        margin-bottom: clamp(0.35rem, 1.2cqh, 0.65rem);
+      }
+
+      .metrics-head h2 {
+        font-size: clamp(0.58rem, calc(0.75rem * var(--metrics-scale)), 0.9rem);
+      }
+
+      .metrics-reset {
+        width: clamp(1.35rem, calc(1.65rem * var(--metrics-scale)), 1.85rem);
+        height: clamp(1.35rem, calc(1.65rem * var(--metrics-scale)), 1.85rem);
+      }
+
+      .metrics-reset svg {
+        width: clamp(0.7rem, calc(0.85rem * var(--metrics-scale)), 0.95rem);
+        height: clamp(0.7rem, calc(0.85rem * var(--metrics-scale)), 0.95rem);
+      }
+    }
+
+    .article-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: clamp(1.5rem, 3vw, 2.5rem);
+    }
+
+    h1 {
+      margin: 0 0 1rem;
+      font-size: clamp(1.75rem, 4vw, 2rem);
+      line-height: 1.15;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.4px;
+    }
+
+    .lead {
+      font-size: 1.25rem;
+      line-height: 1.2;
+      letter-spacing: -0.4px;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .article-card p {
+      margin: 0 0 1rem;
+      line-height: 1.2;
+      letter-spacing: -0.36px;
+    }
+
+    .article-card h2 {
+      margin: 2rem 0 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.36px;
+      color: var(--text);
+    }
+
+    .article-card h3 {
+      margin: 1.25rem 0 0.5rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.32px;
+      color: var(--text);
+    }
+
+    .formula {
+      margin: 0.75rem 0 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-size: 0.875rem;
+      letter-spacing: -0.28px;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+
+    .formula strong { color: var(--text); font-weight: 600; }
+
+    .premium-slot {
+      margin: 2rem 0;
+      padding: 0.75rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    .premium-slot__label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+    }
+
+    .premium-slot__status { font-size: 0.72rem; text-transform: none; letter-spacing: 0; }
+    .premium-slot__status--ok { color: var(--emerald); }
+    .premium-slot__status--warn { color: var(--amber); }
+
+    .premium-creative {
+      position: relative;
+      display: block;
+      width: 100%;
+      min-height: 7.5rem;
+      cursor: pointer;
+      text-align: left;
+      padding: clamp(1.25rem, 3vw, 1.75rem);
+      border-radius: var(--radius-sm);
+      background-color: #ff7e5f;
+      background-image: var(--accent-gradient);
+      color: #fff;
+      box-shadow: 0 12px 40px rgba(255, 126, 95, 0.28);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      overflow: hidden;
+      touch-action: manipulation;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
+
+    .premium-creative:hover,
+    .premium-creative:focus-visible {
+      box-shadow: 0 16px 48px rgba(255, 126, 95, 0.36);
+      outline: 2px solid rgba(255, 255, 255, 0.45);
+      outline-offset: 2px;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .premium-creative:hover,
+      .premium-creative:focus-visible {
+        transform: scale(1.01);
+      }
+    }
+
+    .premium-creative__title {
+      font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.36px;
+      margin: 0;
+    }
+
+    .premium-creative__sub {
+      margin: 0.5rem 0 0;
+      font-size: 1rem;
+      line-height: 1.2;
+      letter-spacing: -0.28px;
+      opacity: 0.92;
+    }
+
+    .premium-creative__cta {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.2);
+      font-size: 1rem;
+      font-weight: 400;
+      letter-spacing: -0.28px;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .premium-creative__cta:hover { background: rgba(255, 255, 255, 0.3); }
+
+    .premium-creative__expand {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: var(--radius-sm);
+      background: rgba(20, 20, 20, 0.2);
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.35s ease, opacity 0.3s ease, margin 0.3s ease;
+    }
+
+    .premium-creative.is-expanded .premium-creative__expand {
+      max-height: 200px;
+      opacity: 1;
+      margin-top: 1rem;
+    }
+
+    .heat-dot {
+      position: absolute;
+      width: 2rem;
+      height: 2rem;
+      margin: -1rem 0 0 -1rem;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.22);
+      filter: blur(8px);
+      pointer-events: none;
+      animation: heat-fade 1.2s ease-out forwards;
+    }
+
+    @keyframes heat-fade {
+      to { opacity: 0; transform: scale(1.6); }
+    }
+
+    /* Панель метрик */
+    .metrics-head {
+      flex-shrink: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .metrics-head__text { flex: 1; min-width: 0; }
+
+    .metrics-reset {
+      flex-shrink: 0;
+      margin-top: -0.05rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      background: var(--bg);
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+
+    .metrics-reset:hover {
+      color: var(--accent);
+      border-color: var(--accent-border);
+      background: var(--accent-dim);
+    }
+
+    .metrics-reset:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+    }
+
+    .metrics-head h2 {
+      margin: 0;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+    }
+
+    .metrics-body {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: clamp(0.55rem, 2.2cqh, 1rem);
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-gutter: stable;
+    }
+
+    .metric-group {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      isolation: isolate;
+    }
+
+    .metric-group__title {
+      flex-shrink: 0;
+      margin: 0 0 clamp(0.28rem, 1cqh, 0.45rem);
+      font-size: clamp(0.56rem, calc(0.625rem * var(--metrics-scale)), 0.82rem);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      line-height: 1.2;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(0.3rem, 1.2cqh, 0.55rem);
+      flex: 0 0 auto;
+      align-content: start;
+      grid-auto-rows: minmax(min-content, auto);
+    }
+
+    .metric-card {
+      padding: clamp(0.38rem, 1.4cqh, 0.65rem) clamp(0.45rem, 1.6cqw, 0.7rem);
+      border-radius: clamp(0.45rem, 1.2cqh, 0.65rem);
+      border: 1px solid var(--border);
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.12rem;
+      min-height: clamp(2.6rem, 9cqh, 4rem);
+      height: auto;
+    }
+
+    .metric-card--wide { grid-column: 1 / -1; }
+
+    .metric-card--hero {
+      min-height: clamp(3rem, 11cqh, 4.75rem);
+      padding: clamp(0.5rem, 1.8cqh, 0.85rem) clamp(0.55rem, 2cqw, 0.9rem);
+      justify-content: center;
+    }
+
+    .metric-card--hero .metric-card__value {
+      font-size: clamp(1rem, calc(1.35rem * var(--metrics-scale)), 1.65rem);
+    }
+
+    .metric-card--accent {
+      border-color: var(--accent-border);
+      background: var(--accent-dim);
+    }
+
+    .metric-card__label {
+      margin: 0;
+      font-size: clamp(0.54rem, calc(0.625rem * var(--metrics-scale)), 0.78rem);
+      letter-spacing: -0.2px;
+      color: var(--muted);
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+
+    .metric-card__value {
+      margin: 0;
+      font-size: clamp(0.78rem, calc(0.95rem * var(--metrics-scale)), 1.15rem);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+      line-height: 1.1;
+      letter-spacing: -0.28px;
+    }
+
+    @media (min-width: 901px) and (max-width: 1200px) {
+      .metrics-col {
+        flex-basis: 280px;
+        max-width: 340px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      html {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      body { overflow-x: hidden; }
+
+      .layout {
+        flex-direction: column;
+        min-height: auto;
+      }
+
+      .article-col {
+        flex: none;
+        width: 100%;
+        padding: 1rem;
+        padding-bottom: calc(var(--mobile-metrics-offset) + 1rem);
+      }
+
+      .premium-slot {
+        margin: 1.25rem 0;
+        min-height: 8rem;
+        overflow: visible;
+        visibility: visible;
+        display: block;
+      }
+
+      .premium-creative {
+        min-height: 6.5rem;
+        visibility: visible;
+        display: block;
+      }
+
+      .premium-creative__sub {
+        font-size: 0.82rem;
+      }
+
+      .metrics-col {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        z-index: 100;
+        flex: none;
+        width: 100%;
+        max-width: none;
+        min-height: auto;
+        max-height: none;
+        align-self: auto;
+        border: none;
+        border-top: 1px solid var(--border);
+        border-radius: var(--radius) var(--radius) 0 0;
+        margin: 0;
+        padding: 0.32rem 0.45rem;
+        padding-bottom: calc(0.32rem + env(safe-area-inset-bottom, 0px));
+        background: var(--surface);
+        box-shadow: 0 -6px 24px rgba(20, 20, 20, 0.08);
+        overflow: visible;
+        container-type: inline-size;
+        --metrics-scale: 0.62;
+      }
+
+      .metrics-head {
+        margin-bottom: 0.2rem;
+      }
+
+      .metrics-head h2 {
+        font-size: 0.52rem;
+      }
+
+      .metrics-reset {
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+
+      .metrics-reset svg {
+        width: 0.62rem;
+        height: 0.62rem;
+      }
+
+      .metrics-body {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.22rem;
+        flex: none;
+        justify-content: initial;
+        overflow: visible;
+      }
+
+      .metric-group,
+      .metric-grid {
+        display: contents;
+      }
+
+      .metric-group__title {
+        display: none;
+      }
+
+      .metric-card {
+        padding: 0.22rem 0.28rem;
+        border-radius: 0.38rem;
+        min-height: 2.35rem;
+        gap: 0.08rem;
+        justify-content: center;
+      }
+
+      .metric-card--hero {
+        min-height: 2.35rem;
+        padding: 0.22rem 0.28rem;
+      }
+
+      .metric-card--hero .metric-card__value {
+        font-size: 0.68rem;
+      }
+
+      .metric-card--wide {
+        grid-column: auto;
+      }
+
+      .metric-card__label {
+        font-size: 0.44rem;
+        line-height: 1.15;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        overflow-wrap: anywhere;
+        hyphens: auto;
+      }
+
+      .metric-card__value {
+        font-size: 0.62rem;
+        line-height: 1.05;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body { font-size: 16px; letter-spacing: -0.32px; }
+      .lead { font-size: 1.125rem; }
+      .premium-creative__cta { display: block; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <main class="article-col">
+      <article class="article-card">
+        <h1>Пролистывайте, читайте, взаимодействуйте с контентом и рекламой. Метрики справа покажут, как измеряется реальное внимание пользователя.</h1>
+        <p class="lead">
+          Рекламодатели всё чаще покупают не «показы», а доказуемый контакт с креативом. В long-read
+          и in-read форматах важны видимость по отраслевым стандартам, время в зоне экрана,
+          вовлечение и поведение при чтении. Ниже — материал о тренде attention-first с живым баннером
+          <strong>Premium Ads</strong> и панелью метрик справа: цифры меняются по мере того, как вы
+          читаете и взаимодействуете с креативом.
+        </p>
+
+        <h2>От охвата к attention-first</h2>
+        <p>
+          Индустрия смещается к brandformance: performance-команды требуют измеримости, а brand-команды —
+          качества контакта. CPM и CPC остаются в отчётах, но в закупке premium-инвентаря растёт спрос
+          на viewable impressions, time-in-view и engagement-сигналы. Партнёры, которые показывают не
+          только «сколько раз показали баннер», но и «сколько времени креатив был реально доступен
+          читателю», выигрывают в переговорах и удержании бюджетов.
+        </p>
+        <p>
+          Для редакционных форматов это особенно важно: пользователь читает длинный текст, реклама
+          конкурирует не с лентой соцсети, а с абзацем статьи. Экономика внимания — не слоган, а
+          понятный набор сигналов: был ли баннер на экране, как долго, задержался ли читатель,
+          проявил ли интерес к креативу.
+        </p>
+
+        <h2>In-read и native: почему контекст решает</h2>
+        <p>
+          In-read размещение встраивает креатив в поток чтения. Пользователь уже в режиме «внимание к
+          тексту» — это другой контекст, чем баннер сбоку или preroll. Тренд последних лет: бренды
+          сочетают короткие performance-циклы с длинными native-материалами, где KPI внимания
+          становятся мостом между медиа и post-view результатами.
+        </p>
+        <p>
+          Premium Ads фиксирует только то, что происходит в момент контакта с размещением: видимость,
+          длительность, взаимодействие, динамика прокрутки. Прозрачная картина для рекламодателя
+          и издателя — без лабораторий и спорных методов измерения.
+        </p>
+
+        <h2>Честный показ и стандарты видимости</h2>
+        <p>
+          Рынок premium-инвентаря давно отошёл от логики «показали — значит засчитали». Рекламодатель
+          платит за шанс быть увиденным: креатив должен достаточно долго находиться в активной зоне
+          экрана. В демо справа viewability отражает выполнение этого порога за текущий показ.
+        </p>
+        <p>
+          Отдельно считается, какую часть времени чтения баннер вообще присутствовал на экране — хотя бы
+          частично. Это метрика <strong>ATR (Attention Through Rate)</strong>: она отличает мимолётный
+          пролистывание от ситуации, когда креатив сопровождал чтение значительной части статьи.
+        </p>
+
+        <!-- Баннер в середине длинной статьи -->
+        <aside class="premium-slot" id="premium-slot" aria-label="Рекламный блок">
+          <div class="premium-slot__label">
+            <span>Реклама · Premium Ads</span>
+            <span class="premium-slot__status premium-slot__status--warn" id="viewability-status">○ Вне зоны экрана</span>
+          </div>
+
+          <div class="premium-creative" id="premium-creative" role="group" aria-label="Интерактивный рекламный креатив" tabindex="0">
+            <p class="premium-creative__title">Premium Ads — премиальные форматы в контенте</p>
+            <p class="premium-creative__sub">Коснитесь, проведите пальцем или раскройте креатив — метрики внизу обновляются в реальном времени.</p>
+            <button type="button" class="premium-creative__cta" id="expand-btn">Раскрыть креатив →</button>
+            <div class="premium-creative__expand" id="expand-panel">
+              <strong>Расширенный слой креатива</strong>
+              <p style="margin:0.5rem 0 0;font-size:0.875rem;line-height:1.2;letter-spacing:-0.28px;opacity:0.92">
+                Rich media, видео, интерактив — форматы Premium Ads для удержания внимания в long-read.
+              </p>
+            </div>
+          </div>
+        </aside>
+
+        <h2>Что означают метрики в панели справа</h2>
+        <p>
+          Панель обновляется в реальном времени: каждое ваше действие — прокрутка, пауза у баннера,
+          наведение, клик или раскрытие креатива — влияет на показатели. Один показ = одна сессия
+          чтения; кнопка перезапуска в углу панели сбрасывает счётчики, как при новом заходе на страницу.
+        </p>
+
+        <h3>Суммарное время внимания</h3>
+        <p class="formula">
+          <strong>Растёт с момента загрузки</strong> статьи (iframe) и не останавливается, пока вы на
+          странице. Это общее время сессии чтения — независимо от того, виден баннер на экране или нет.
+          Сбрасывается кнопкой перезапуска метрик, как при новом заходе.
+        </p>
+
+        <h3>Среднее время в сессии видимости</h3>
+        <p class="formula">
+          Отражает, как долго в среднем длится один «визит» баннера на экране, пока он полностью
+          соответствует стандарту видимости. <strong>Растёт</strong>, если вы задерживаетесь у блока,
+          читаете текст вокруг, возвращаетесь к баннеру. <strong>Снижается</strong> при рваном скролле
+          и коротких появлениях креатива на экране.
+        </p>
+
+        <h3>Viewability</h3>
+        <p class="formula">
+          Показывает, был ли креатив по-настоящему виден по отраслевым правилам: достаточная площадь
+          на экране и достаточная длительность за этот показ. <strong>Достигает 100%</strong>, если вы
+          держите баннер в зоне видимости нужное время. <strong>Остаётся низкой</strong>, если баннер
+          мелькнул краем или исчез слишком быстро.
+        </p>
+
+        <h3>ATR — Attention Through Rate</h3>
+        <p class="formula">
+          Доля времени чтения, когда баннер хоть как-то присутствовал на экране — даже частично.
+          <strong>Растёт</strong>, если вы медленно читаете статью и баннер долго «живёт» в поле зрения.
+          <strong>Падает</strong>, если быстро пролистываете к концу или долго находитесь в верхней
+          части текста, не доходя до рекламного блока.
+        </p>
+
+        <h3>Уровень вовлечения</h3>
+        <p class="formula">
+          Насколько активно вы взаимодействуете с креативом. <strong>Повышают</strong> наведение,
+          движение курсора или пальца по баннеру, клики, раскрытие расширенного слоя, длительный
+          контакт с креативом. <strong>Снижают</strong> пассивный просмотр без касаний и мгновенный
+          уход со блока.
+        </p>
+
+        <h3>Замедление скролла</h3>
+        <p class="formula">
+          Показывает, как часто вы притормаживаете прокрутку в момент, когда баннер в зоне видимости —
+          признак того, что креатив «цепляет» внимание в потоке чтения. <strong>Растёт</strong> при
+          плавном чтении и паузах у рекламного блока. <strong>Снижается</strong> при быстром пролистывании
+          без остановок.
+        </p>
+
+        <h3>Индекс внимания</h3>
+        <p class="formula">
+          Сводный показатель качества контакта с креативом. Учитывает видимость, вовлечение, суммарное
+          время внимания и замедления при скролле. <strong>Растёт</strong>, когда вы и видите баннер
+          достаточно долго, и взаимодействуете с ним осмысленно. <strong>Падает</strong>, если креатив
+          остался периферийным эпизодом при чтении.
+        </p>
+
+        <h2>Тренды закупки и отчётности</h2>
+        <p>
+          Агентства переводят часть бюджетов в модели, где оплата или бонусы привязаны к viewable
+          impressions и time-in-view. Рекламодатели связывают метрики внимания с brand lift и
+          post-view конверсиями. В premium-сегменте растёт спрос на прозрачность: издатель показывает
+          не «средний CTR по сайту», а распределение внимания по конкретным размещениям и креативам.
+        </p>
+        <p>
+          Premium Ads даёт единый контур — от live-показателей в момент чтения до отчётов для команды
+          и автоматизированной аналитики. Рекламодатель видит, за что платит; издатель — какой формат
+          действительно удерживает аудиторию.
+        </p>
+
+        <h2>Конфиденциальность и доверие к данным</h2>
+        <p>
+          В условиях ужесточения правил персональных данных измерение внимания в контексте самой статьи
+          становится стандартом de facto. Сигналы видимости и вовлечения можно агрегировать без
+          навязчивого профилирования — важный аргумент для brand safety и доверия брендов к площадке.
+        </p>
+        <p>
+          Premium Ads опирается на поведение в момент контакта с размещением, а не на спорные
+          косвенные прокси. Это снижает разрыв между тем, что обещает медиаплан, и тем, что реально
+          происходит с читателем.
+        </p>
+
+        <h2>Мобильное чтение</h2>
+        <p>
+          На смартфонах экран меньше, сессии видимости короче, но прокрутка и касания остаются
+          информативными. Демо одинаково учитывает чтение с телефона и с компьютера; панель метрик
+          на узком экране переезжает под статью. Это отражает реальность: большая часть long-read
+          потребляется с mobile, in-read баннер — в середине текста.
+        </p>
+
+        <h2>Практика для рекламодателя</h2>
+        <p>
+          При планировании native-кампании задайте целевые ориентиры: доля viewable показов, медианный
+          ATR, минимальное вовлечение на интерактивных креативах. Сравнивайте креативы не только по CTR,
+          но по индексу внимания и замедлениям скролла — они лучше отражают запоминаемость и интерес
+          к бренду.
+        </p>
+        <p>
+          Прокрутите статью, поработайте с баннером Premium Ads выше и наблюдайте панель справа.
+          Нажмите кнопку перезапуска, чтобы пройти сценарий заново. Так вы увидите, как экономика
+          внимания превращается из абстракции в измеримый результат premium-размещения.
+        </p>
+      </article>
+    </main>
+
+    <aside class="metrics-col" aria-label="Метрики экономики внимания">
+      <header class="metrics-head">
+        <div class="metrics-head__text">
+          <h2>Экономика внимания</h2>
+        </div>
+        <button type="button" class="metrics-reset" id="metrics-reset" title="Сбросить метрики" aria-label="Сбросить метрики">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+            <polyline points="21 3 21 9 15 9" />
+          </svg>
+        </button>
+      </header>
+
+      <div class="metrics-body">
+        <section class="metric-group">
+          <h3 class="metric-group__title">Индекс</h3>
+          <div class="metric-grid">
+            <div class="metric-card metric-card--accent metric-card--wide metric-card--hero">
+              <p class="metric-card__label">Индекс внимания</p>
+              <p class="metric-card__value" id="m-attention-index">0%</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="metric-group">
+          <h3 class="metric-group__title">Внимание</h3>
+          <div class="metric-grid">
+            <div class="metric-card">
+              <p class="metric-card__label">Суммарное время</p>
+              <p class="metric-card__value" id="m-attention-sec">0 сек</p>
+            </div>
+            <div class="metric-card">
+              <p class="metric-card__label">Ср. сессия MRC</p>
+              <p class="metric-card__value" id="m-avg-session">0 сек</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="metric-group">
+          <h3 class="metric-group__title">Viewability · ATR</h3>
+          <div class="metric-grid">
+            <div class="metric-card metric-card--accent">
+              <p class="metric-card__label">Viewability MRC</p>
+              <p class="metric-card__value" id="m-viewability">0%</p>
+            </div>
+            <div class="metric-card metric-card--accent">
+              <p class="metric-card__label">ATR</p>
+              <p class="metric-card__value" id="m-atr">0%</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="metric-group">
+          <h3 class="metric-group__title">Поведение</h3>
+          <div class="metric-grid">
+            <div class="metric-card">
+              <p class="metric-card__label">Замедление скролла</p>
+              <p class="metric-card__value" id="m-scroll-slowdown">0%</p>
+            </div>
+            <div class="metric-card">
+              <p class="metric-card__label">Вовлечение</p>
+              <p class="metric-card__value" id="m-engagement">0%</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var MRC_VISIBLE_RATIO = 0.5;
+      var MRC_VIEWABLE_MS = 1000;
+      var SCROLL_SLOWDOWN_FACTOR = 0.65;
+      var pageLoadTime = Date.now();
+
+      function computeViewabilityMrcPct(cumulativeMrcVisibleMs) {
+        return cumulativeMrcVisibleMs >= MRC_VIEWABLE_MS ? 100 : 0;
+      }
+
+      function computeEngagementPct(state) {
+        var score = 0;
+        if (state.attentionMs >= 400) score += 20;
+        if (state.hoverMs >= 300) score += 20;
+        if (state.mouseMoveCount >= 5) score += 15;
+        if (state.clicks >= 1) score += 15;
+        if (state.expanded) score += 35;
+        if (state.expandMs >= 800) score += 15;
+        var interacted = state.hoverMs > 200 || state.mouseMoveCount >= 3 || state.clicks > 0;
+        if (state.expanded && interacted) score = Math.max(score, 80);
+        if (state.expanded && state.attentionMs >= 800 && state.mouseMoveCount >= 3) score = Math.max(score, 90);
+        return Math.min(100, score);
+      }
+
+      function computeAttentionIndex(viewabilityPct, engagementPct, attentionSec, scrollSlowdownPct) {
+        var timeScore = Math.min(40, attentionSec * 8);
+        return Math.min(
+          100,
+          Math.round(
+            viewabilityPct * 0.3 +
+              engagementPct * 0.35 +
+              timeScore +
+              scrollSlowdownPct * 0.15
+          )
+        );
+      }
+
+      function computeScrollSlowdownPct(slowdownHits, scrollInViewCount) {
+        if (scrollInViewCount === 0) return 0;
+        return Math.min(100, Math.round((slowdownHits / scrollInViewCount) * 100));
+      }
+
+      function computeAtrPct(cumulativeInViewMs, timeLoadMs) {
+        if (timeLoadMs <= 0) return 0;
+        return Math.min(100, Math.round((cumulativeInViewMs / timeLoadMs) * 100));
+      }
+
+      var banner = document.getElementById("premium-creative");
+      var expandBtn = document.getElementById("expand-btn");
+      var resetBtn = document.getElementById("metrics-reset");
+      var statusEl = document.getElementById("viewability-status");
+
+      var scrollTrack = { lastY: window.scrollY, lastT: performance.now() };
+
+      function createInitialState() {
+        return {
+          visibleRatio: 0,
+          cumulativeMrcVisibleMs: 0,
+          cumulativeInViewMs: 0,
+          attentionMs: 0,
+          lastTick: 0,
+          sessionDurationsMs: [],
+          sessionStart: null,
+          scrollBaseline: [],
+          slowdownHits: 0,
+          scrollInViewCount: 0,
+          expandMs: 0,
+          expandStart: null,
+          hoverMs: 0,
+          hoverStart: null,
+          mouseMoveCount: 0,
+          clicks: 0,
+          expanded: false,
+          hasTrackedView: false,
+        };
+      }
+
+      var state = createInitialState();
+
+      var ui = {
+        attentionSec: document.getElementById("m-attention-sec"),
+        avgSession: document.getElementById("m-avg-session"),
+        attentionIndex: document.getElementById("m-attention-index"),
+        viewability: document.getElementById("m-viewability"),
+        atr: document.getElementById("m-atr"),
+        scrollSlowdown: document.getElementById("m-scroll-slowdown"),
+        engagement: document.getElementById("m-engagement"),
+      };
+
+      function resetScrollTracking() {
+        state.scrollBaseline = [];
+        state.slowdownHits = 0;
+        state.scrollInViewCount = 0;
+        syncMetrics();
+      }
+
+      function onBannerInteract() {
+        resetScrollTracking();
+      }
+
+      function syncMetrics() {
+        var now = Date.now();
+        var timeLoadMs = now - pageLoadTime;
+        var sessionCount = state.sessionDurationsMs.length;
+        var activeSessionMs =
+          state.sessionStart && state.visibleRatio >= MRC_VISIBLE_RATIO
+            ? now - state.sessionStart
+            : 0;
+        var totalSessionMs =
+          state.sessionDurationsMs.reduce(function (a, b) { return a + b; }, 0) + activeSessionMs;
+        var divisor = sessionCount + (activeSessionMs > 0 ? 1 : 0);
+        var avgMs = divisor > 0 ? totalSessionMs / divisor : activeSessionMs;
+
+        var viewabilityMrcPct = computeViewabilityMrcPct(state.cumulativeMrcVisibleMs);
+        var atrPct = computeAtrPct(state.cumulativeInViewMs, timeLoadMs);
+        var scrollSlowdownPct = computeScrollSlowdownPct(state.slowdownHits, state.scrollInViewCount);
+        var engagementLevelPct = computeEngagementPct({
+          hoverMs: state.hoverMs,
+          mouseMoveCount: state.mouseMoveCount,
+          clicks: state.clicks,
+          expanded: state.expanded,
+          expandMs: state.expandMs,
+          attentionMs: state.attentionMs,
+        });
+        var totalAttentionSec = Math.round(timeLoadMs / 1000);
+        var mrcAttentionSec = Math.round(state.attentionMs / 1000);
+        var attentionIndex = computeAttentionIndex(
+          viewabilityMrcPct,
+          engagementLevelPct,
+          mrcAttentionSec,
+          scrollSlowdownPct
+        );
+        var visibleNow = state.visibleRatio >= MRC_VISIBLE_RATIO;
+
+        ui.attentionSec.textContent = totalAttentionSec + " сек";
+        ui.avgSession.textContent = (avgMs / 1000).toFixed(1) + " сек";
+        ui.attentionIndex.textContent = attentionIndex + "%";
+        ui.viewability.textContent = viewabilityMrcPct + "%";
+        ui.atr.textContent = atrPct + "%";
+        ui.scrollSlowdown.textContent = scrollSlowdownPct + "%";
+        ui.engagement.textContent = engagementLevelPct + "%";
+
+        if (viewabilityMrcPct >= 100) {
+          statusEl.textContent = "● Viewable";
+          statusEl.className = "premium-slot__status premium-slot__status--ok";
+        } else if (visibleNow) {
+          statusEl.textContent = "● В зоне видимости";
+          statusEl.className = "premium-slot__status premium-slot__status--ok";
+        } else if (state.visibleRatio > 0) {
+          statusEl.textContent = "● Частично на экране";
+          statusEl.className = "premium-slot__status premium-slot__status--ok";
+        } else {
+          statusEl.textContent = "○ Вне зоны экрана";
+          statusEl.className = "premium-slot__status premium-slot__status--warn";
+        }
+
+        if (window.parent !== window) {
+          window.parent.postMessage(
+            {
+              type: "premium-ads-attention-metrics",
+              metrics: {
+                totalAttentionSec: totalAttentionSec,
+                avgTimeInViewSec: Number((avgMs / 1000).toFixed(1)),
+                scrollSlowdownPct: scrollSlowdownPct,
+                viewabilityMrcPct: viewabilityMrcPct,
+                atrPct: atrPct,
+                attentionIndex: attentionIndex,
+                engagementLevelPct: engagementLevelPct,
+                visibleNow: visibleNow,
+                timeInViewMs: state.cumulativeInViewMs,
+                timeLoadMs: timeLoadMs,
+                impressions: state.hasTrackedView ? 1 : 0,
+              },
+            },
+            "*"
+          );
+        }
+      }
+
+      function resetAllMetrics() {
+        pageLoadTime = Date.now();
+        state = createInitialState();
+        scrollTrack.lastY = window.scrollY;
+        scrollTrack.lastT = performance.now();
+
+        banner.classList.remove("is-expanded");
+        banner.removeAttribute("aria-expanded");
+        expandBtn.hidden = false;
+        banner.querySelectorAll(".heat-dot").forEach(function (dot) { dot.remove(); });
+
+        observer.unobserve(banner);
+        observer.observe(banner);
+        syncMetrics();
+      }
+
+      var observer = new IntersectionObserver(
+        function (entries) {
+          var entry = entries[0];
+          var ratio = entry.intersectionRatio;
+          var now = Date.now();
+          var wasMrc = state.visibleRatio >= MRC_VISIBLE_RATIO;
+          var isMrc = ratio >= MRC_VISIBLE_RATIO;
+
+          state.visibleRatio = ratio;
+
+          if (isMrc && !wasMrc) {
+            state.sessionStart = now;
+            if (!state.hasTrackedView) state.hasTrackedView = true;
+          }
+
+          if (!isMrc && wasMrc && state.sessionStart) {
+            var duration = now - state.sessionStart;
+            if (duration > 0) state.sessionDurationsMs.push(duration);
+            state.sessionStart = null;
+          }
+
+          syncMetrics();
+        },
+        { threshold: [0, 0.01, 0.25, 0.5, 0.75, 1] }
+      );
+      observer.observe(banner);
+
+      setInterval(function () {
+        var now = Date.now();
+        if (!state.lastTick) {
+          state.lastTick = now;
+          return;
+        }
+        var delta = now - state.lastTick;
+        state.lastTick = now;
+
+        if (state.visibleRatio > 0) {
+          state.cumulativeInViewMs += delta;
+        }
+        if (state.visibleRatio >= MRC_VISIBLE_RATIO) {
+          state.attentionMs += delta;
+          state.cumulativeMrcVisibleMs += delta;
+        }
+        if (state.expanded && state.expandStart) {
+          state.expandMs = now - state.expandStart;
+        }
+        syncMetrics();
+      }, 100);
+
+      resetBtn.addEventListener("click", resetAllMetrics);
+
+      window.addEventListener(
+        "scroll",
+        function () {
+          var now = performance.now();
+          var dy = Math.abs(window.scrollY - scrollTrack.lastY);
+          var dt = Math.max(now - scrollTrack.lastT, 1);
+          var velocity = dy / dt;
+
+          if (state.visibleRatio >= MRC_VISIBLE_RATIO) {
+            state.scrollInViewCount += 1;
+            var baselineSamples = state.scrollBaseline.filter(function (v) { return v > 0; });
+            var baseline =
+              baselineSamples.length > 0
+                ? baselineSamples.reduce(function (a, b) { return a + b; }, 0) / baselineSamples.length
+                : null;
+            if (baseline !== null && velocity < baseline * SCROLL_SLOWDOWN_FACTOR) {
+              state.slowdownHits += 1;
+            }
+            state.scrollBaseline.push(velocity);
+            if (state.scrollBaseline.length > 24) state.scrollBaseline.shift();
+          } else if (state.scrollBaseline.length < 12) {
+            state.scrollBaseline.push(velocity);
+          }
+
+          scrollTrack.lastY = window.scrollY;
+          scrollTrack.lastT = now;
+          syncMetrics();
+        },
+        { passive: true }
+      );
+
+      banner.addEventListener("mouseenter", function () {
+        state.hoverStart = Date.now();
+        onBannerInteract();
+      });
+
+      banner.addEventListener("touchstart", function () {
+        if (!state.hoverStart) state.hoverStart = Date.now();
+        onBannerInteract();
+      }, { passive: true });
+
+      banner.addEventListener("touchend", function () {
+        if (state.hoverStart) {
+          state.hoverMs += Date.now() - state.hoverStart;
+          state.hoverStart = null;
+        }
+        syncMetrics();
+      }, { passive: true });
+
+      banner.addEventListener("mouseleave", function () {
+        if (state.hoverStart) {
+          state.hoverMs += Date.now() - state.hoverStart;
+          state.hoverStart = null;
+        }
+        syncMetrics();
+      });
+
+      function addHeat(clientX, clientY) {
+        var rect = banner.getBoundingClientRect();
+        var dot = document.createElement("span");
+        dot.className = "heat-dot";
+        dot.style.left = ((clientX - rect.left) / rect.width) * 100 + "%";
+        dot.style.top = ((clientY - rect.top) / rect.height) * 100 + "%";
+        banner.appendChild(dot);
+        setTimeout(function () { dot.remove(); }, 1300);
+      }
+
+      banner.addEventListener("mousemove", function (e) {
+        state.mouseMoveCount += 1;
+        addHeat(e.clientX, e.clientY);
+        syncMetrics();
+      });
+
+      banner.addEventListener(
+        "touchmove",
+        function (e) {
+          if (!e.touches.length) return;
+          state.mouseMoveCount += 1;
+          addHeat(e.touches[0].clientX, e.touches[0].clientY);
+          syncMetrics();
+        },
+        { passive: true }
+      );
+
+      banner.addEventListener("click", function (e) {
+        if (e.target === expandBtn || expandBtn.contains(e.target)) return;
+        state.clicks += 1;
+        onBannerInteract();
+        syncMetrics();
+      });
+
+      banner.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && e.target === banner) {
+          state.clicks += 1;
+          onBannerInteract();
+          syncMetrics();
+        }
+      });
+
+      function expandCreative(e) {
+        if (e) {
+          e.stopPropagation();
+          e.preventDefault();
+        }
+        if (state.expanded) return;
+        state.expanded = true;
+        state.clicks += 1;
+        state.expandStart = Date.now();
+        banner.classList.add("is-expanded");
+        banner.setAttribute("aria-expanded", "true");
+        expandBtn.hidden = true;
+        onBannerInteract();
+        syncMetrics();
+      }
+
+      expandBtn.addEventListener("click", expandCreative);
+      expandBtn.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") expandCreative(e);
+      });
+
+      function postHeight() {
+        if (window.parent === window) return;
+        var height = Math.ceil(
+          Math.max(
+            document.body.scrollHeight,
+            document.documentElement.scrollHeight,
+            document.body.offsetHeight,
+            document.documentElement.offsetHeight
+          )
+        );
+        window.parent.postMessage(
+          { type: "premium-ads-iframe-resize", height: height },
+          "*"
+        );
+      }
+
+      function burstIframeResize() {
+        if (window.parent === window) return;
+        var attempts = 0;
+        var timer = window.setInterval(function () {
+          postHeight();
+          attempts += 1;
+          if (attempts >= 12) window.clearInterval(timer);
+        }, 250);
+      }
+
+      function updateMobileMetricsInset() {
+        var metricsCol = document.querySelector(".metrics-col");
+        if (!metricsCol || window.matchMedia("(min-width: 901px)").matches) {
+          document.documentElement.style.removeProperty("--mobile-metrics-offset");
+          return;
+        }
+        document.documentElement.style.setProperty(
+          "--mobile-metrics-offset",
+          metricsCol.offsetHeight + "px"
+        );
+        postHeight();
+      }
+
+      window.addEventListener("load", function () {
+        postHeight();
+        burstIframeResize();
+        updateMobileMetricsInset();
+      });
+      window.addEventListener("resize", function () {
+        postHeight();
+        updateMobileMetricsInset();
+      });
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", function () {
+          postHeight();
+          updateMobileMetricsInset();
+        });
+      }
+      if (typeof ResizeObserver !== "undefined") {
+        new ResizeObserver(function () {
+          postHeight();
+          updateMobileMetricsInset();
+        }).observe(document.body);
+        var metricsCol = document.querySelector(".metrics-col");
+        if (metricsCol) {
+          new ResizeObserver(updateMobileMetricsInset).observe(metricsCol);
+        }
+      }
+
+      syncMetrics();
+      updateMobileMetricsInset();
+    })();
+  </script>
+</body>
+</html>
