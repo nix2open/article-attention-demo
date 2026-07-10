@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Обновление демо · Premium Ads</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f7f8fa;
+      --border: rgba(20, 20, 20, 0.08);
+      --text: #141414;
+      --muted: #6c6c78;
+      --accent: #ff6e3d;
+      --accent-dim: rgba(255, 110, 61, 0.1);
+      --danger: #dc2626;
+      --ok: #16a34a;
+      font-family: "Raleway", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: 1.5rem;
+    }
+    .card {
+      width: min(100%, 520px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 1.75rem;
+    }
+    h1 {
+      margin: 0 0 0.35rem;
+      font-size: 1.35rem;
+      font-weight: 600;
+    }
+    .sub {
+      margin: 0 0 1.25rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.35;
+    }
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+    input[type="password"],
+    input[type="file"] {
+      width: 100%;
+      margin-bottom: 0.9rem;
+      padding: 0.7rem 0.85rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      background: #fff;
+      font: inherit;
+    }
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 0.85rem;
+      padding: 0.8rem 1rem;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+      color: #fff;
+    }
+    button.secondary {
+      margin-top: 0.65rem;
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-weight: 500;
+    }
+    .msg {
+      margin: 0.9rem 0 0;
+      padding: 0.75rem 0.85rem;
+      border-radius: 0.75rem;
+      font-size: 0.9rem;
+      line-height: 1.35;
+      display: none;
+    }
+    .msg.show { display: block; }
+    .msg.ok { background: rgba(22, 163, 74, 0.1); color: var(--ok); }
+    .msg.err { background: rgba(220, 38, 38, 0.08); color: var(--danger); }
+    .meta {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .meta a { color: var(--accent); }
+    .hidden { display: none; }
+    ul { margin: 0.35rem 0 0; padding-left: 1.1rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Обновление orange-демо</h1>
+    <p class="sub">
+      Загрузите новый <code>index.html</code>. Текущая версия уйдёт в
+      <code>archived/</code> с UTC-меткой в имени файла.
+    </p>
+
+    <section id="setup-view" class="hidden">
+      <p class="sub" style="margin-top:0">Первый вход: задайте пароль администратора.</p>
+      <label for="setup-pass">Новый пароль</label>
+      <input id="setup-pass" type="password" autocomplete="new-password" />
+      <label for="setup-pass2">Повтор пароля</label>
+      <input id="setup-pass2" type="password" autocomplete="new-password" />
+      <button type="button" id="setup-btn">Сохранить пароль</button>
+    </section>
+
+    <section id="login-view" class="hidden">
+      <label for="login-pass">Пароль</label>
+      <input id="login-pass" type="password" autocomplete="current-password" />
+      <button type="button" id="login-btn">Войти</button>
+    </section>
+
+    <section id="upload-view" class="hidden">
+      <label for="file">Файл страницы (.html)</label>
+      <input id="file" type="file" accept=".html,text/html" />
+      <button type="button" id="upload-btn">Загрузить и опубликовать</button>
+      <button type="button" class="secondary" id="logout-btn">Выйти</button>
+      <div class="meta" id="info"></div>
+    </section>
+
+    <p class="msg" id="msg"></p>
+  </div>
+
+  <script>
+    const API = "/embed-admin/api";
+    const msg = document.getElementById("msg");
+    const setupView = document.getElementById("setup-view");
+    const loginView = document.getElementById("login-view");
+    const uploadView = document.getElementById("upload-view");
+    const info = document.getElementById("info");
+
+    function showMessage(text, type) {
+      msg.textContent = text;
+      msg.className = "msg show " + (type || "");
+    }
+
+    function showView(name) {
+      setupView.classList.add("hidden");
+      loginView.classList.add("hidden");
+      uploadView.classList.add("hidden");
+      if (name === "setup") setupView.classList.remove("hidden");
+      if (name === "login") loginView.classList.remove("hidden");
+      if (name === "upload") uploadView.classList.remove("hidden");
+    }
+
+    async function api(path, options) {
+      const res = await fetch(API + path, {
+        credentials: "same-origin",
+        ...options,
+        headers: {
+          ...(options && options.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
+          ...(options && options.headers ? options.headers : {}),
+        },
+      });
+      const data = await res.json().catch(function () { return {}; });
+      if (!res.ok) throw new Error(data.error || "Ошибка запроса");
+      return data;
+    }
+
+    async function refreshInfo() {
+      const data = await api("/info");
+      const live = data.live || {};
+      const archives = data.archives || [];
+      info.innerHTML =
+        '<div><strong>Опубликовано:</strong> ' +
+        (live.updatedAt ? new Date(live.updatedAt).toLocaleString("ru-RU") : "нет файла") +
+        "</div>" +
+        '<div><a href="' + data.liveUrl + '" target="_blank" rel="noopener">Открыть live-страницу</a></div>' +
+        (archives.length
+          ? "<div style='margin-top:0.5rem'><strong>Последние архивы:</strong><ul>" +
+            archives.slice(0, 5).map(function (name) { return "<li><code>" + name + "</code></li>"; }).join("") +
+            "</ul></div>"
+          : "");
+    }
+
+    async function boot() {
+      const status = await api("/auth/status");
+      if (!status.configured) {
+        showView("setup");
+        return;
+      }
+      if (!status.authenticated) {
+        showView("login");
+        return;
+      }
+      showView("upload");
+      await refreshInfo();
+    }
+
+    document.getElementById("setup-btn").addEventListener("click", async function () {
+      try {
+        await api("/auth/setup", {
+          method: "POST",
+          body: JSON.stringify({
+            password: document.getElementById("setup-pass").value,
+            confirm: document.getElementById("setup-pass2").value,
+          }),
+        });
+        showMessage("Пароль сохранён. Можно загружать страницу.", "ok");
+        showView("upload");
+        await refreshInfo();
+      } catch (e) {
+        showMessage(e.message, "err");
+      }
+    });
+
+    document.getElementById("login-btn").addEventListener("click", async function () {
+      try {
+        await api("/auth/login", {
+          method: "POST",
+          body: JSON.stringify({ password: document.getElementById("login-pass").value }),
+        });
+        showMessage("Вход выполнен.", "ok");
+        showView("upload");
+        await refreshInfo();
+      } catch (e) {
+        showMessage(e.message, "err");
+      }
+    });
+
+    document.getElementById("logout-btn").addEventListener("click", async function () {
+      await api("/auth/logout", { method: "POST", body: "{}" });
+      showView("login");
+      showMessage("Вы вышли.", "ok");
+    });
+
+    document.getElementById("upload-btn").addEventListener("click", async function () {
+      const fileInput = document.getElementById("file");
+      if (!fileInput.files || !fileInput.files[0]) {
+        showMessage("Выберите HTML-файл.", "err");
+        return;
+      }
+      const form = new FormData();
+      form.append("file", fileInput.files[0]);
+      try {
+        const data = await api("/upload", { method: "POST", body: form });
+        showMessage(data.message || "Страница обновлена.", "ok");
+        fileInput.value = "";
+        await refreshInfo();
+      } catch (e) {
+        showMessage(e.message, "err");
+      }
+    });
+
+    boot().catch(function (e) {
+      showMessage(e.message || "Не удалось загрузить панель", "err");
+    });
+  </script>
+</body>
+</html>

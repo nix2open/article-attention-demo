@@ -1,25 +1,65 @@
 # Article Attention Demo
 
-Демо-страница «экономика внимания» для встраивания через iframe (Premium Ads).
+Демо «экономика внимания» для iframe (Premium Ads).
 
-## Версии
+## Ссылки
 
-| Путь | Описание |
-|------|----------|
-| `orange/index.html` | Оранжевая тема (основная рабочая) |
-| `orange/versions/index-stable-2026-07-03.html` | Стабильный снимок до адаптивных правок |
-| `violet/index.html` | Фиолетовая тема |
+| | URL |
+|---|-----|
+| **Live (orange)** | https://measure.geniusgroup.cc/embed/article-attention-demo-orange/ |
+| **Панель загрузки** | https://measure.geniusgroup.cc/embed-admin/ |
+| **Violet** | https://measure.geniusgroup.cc/embed/article-attention-demo/ |
 
-## Продакшен
+## Для коллег
 
-- Orange: https://measure.geniusgroup.cc/embed/article-attention-demo-orange/
-- Orange stable: https://measure.geniusgroup.cc/embed/article-attention-demo-orange/versions/index-stable-2026-07-03.html
-- Violet: https://measure.geniusgroup.cc/embed/article-attention-demo/
+Полная инструкция: **[docs/COLLABORATOR_GUIDE.md](docs/COLLABORATOR_GUIDE.md)**
 
-## Деплой на sv01
+Кратко:
+- **Git:** правки в `orange/index.html` → `git push` в `main` → автодеплой
+- **Без Git:** загрузка `.html` в https://measure.geniusgroup.cc/embed-admin/
+
+## Структура
+
+```text
+orange/index.html              — рабочая страница (деплоится на сервер)
+orange/versions/               — локальные снимки
+violet/index.html              — фиолетовая тема
+deploy/embed-admin/            — панель загрузки для админов
+deploy/install-embed-admin.sh  — установка панели на сервер
+.github/workflows/deploy-orange.yml — CI/CD
+docs/COLLABORATOR_GUIDE.md     — инструкция для команды
+```
+
+## Первичная настройка (владелец)
+
+### 1. GitHub Secrets для автодеплоя
+
+`Settings → Secrets → Actions`:
+
+- `DEPLOY_HOST` = `95.213.154.171`
+- `DEPLOY_USER` = `root`
+- `DEPLOY_SSH_KEY` = приватный ключ SSH
+
+### 2. Панель загрузки на сервере
 
 ```bash
-rsync -avz -e "ssh -i ~/kk1" orange/ root@95.213.154.171:/opt/premium-measure/public/embed/article-attention-demo-orange/
+chmod +x deploy/install-embed-admin.sh
+./deploy/install-embed-admin.sh
+```
+
+Откройте https://measure.geniusgroup.cc/embed-admin/ и задайте пароль при первом входе.
+
+### 3. Добавить коллег в репозиторий
+
+GitHub → **Settings → Collaborators** → пригласить по email/username.
+
+## Ручной деплой
+
+```bash
+./deploy/remote-deploy-orange.sh orange/index.html
+# или
+rsync -avz -e "ssh -i ~/kk1" orange/index.html \
+  root@95.213.154.171:/opt/premium-measure/public/embed/article-attention-demo-orange/
 ```
 
 ## iframe

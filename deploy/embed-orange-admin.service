@@ -1,0 +1,19 @@
+[Unit]
+Description=Premium Ads embed orange admin uploader
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/embed-orange-admin
+Environment=NODE_ENV=production
+Environment=PORT=3004
+Environment=BASE_PATH=/embed-admin
+Environment=DATA_DIR=/opt/embed-orange-admin/data
+Environment=EMBED_DIR=/opt/premium-measure/public/embed/article-attention-demo-orange
+Environment=COOKIE_SECURE=true
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
