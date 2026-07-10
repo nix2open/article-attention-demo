@@ -35,7 +35,7 @@ const upload = multer({
 const app = express();
 app.set("trust proxy", 1);
 app.use(cookieParser());
-app.use(express.json({ limit: "32kb" }));
+app.use(express.json({ limit: `${MAX_UPLOAD_BYTES}b` }));
 
 async function ensureDirs() {
   await fs.mkdir(DATA_DIR, { recursive: true });
@@ -176,6 +176,38 @@ function validateHtml(buffer) {
   return head.startsWith("<!doctype html") || head.startsWith("<html");
 }
 
+async function readLiveHtml() {
+  try {
+    return await fs.readFile(LIVE_FILE, "utf8");
+  } catch {
+    return null;
+  }
+}
+
+async function publishHtml(content) {
+  const buffer = Buffer.isBuffer(content) ? content : Buffer.from(content, "utf8");
+  if (buffer.length > MAX_UPLOAD_BYTES) {
+    const err = new Error(`Файл больше ${MAX_UPLOAD_BYTES / (1024 * 1024)} МБ`);
+    err.status = 400;
+    throw err;
+  }
+  if (!validateHtml(buffer)) {
+    const err = new Error("Файл не похож на HTML-страницу");
+    err.status = 400;
+    throw err;
+  }
+  const archivedAs = await archiveCurrentLive();
+  await fs.writeFile(LIVE_FILE, buffer);
+  const live = await liveInfo();
+  return {
+    archivedAs,
+    live,
+    message: archivedAs
+      ? `Страница обновлена. Предыдущая версия: archived/${archivedAs}`
+      : "Страница опубликована (архивировать было нечего)",
+  };
+}
+
 const api = express.Router();
 
 api.get("/auth/status", async (_req, res) => {
@@ -242,6 +274,39 @@ api.get("/info", requireAuth, async (_req, res) => {
   });
 });
 
+api.get("/download", requireAuth, async (_req, res) => {
+  try {
+    await fs.access(LIVE_FILE);
+  } catch {
+    return res.status(404).json({ error: "Актуальный файл не найден" });
+  }
+  res.setHeader("Content-Type", "text/html; charset=utf-8");
+  res.setHeader("Content-Disposition", 'attachment; filename="index.html"');
+  res.sendFile(LIVE_FILE);
+});
+
+api.get("/source", requireAuth, async (_req, res) => {
+  const html = await readLiveHtml();
+  if (html === null) {
+    return res.status(404).json({ error: "Актуальный файл не найден" });
+  }
+  const live = await liveInfo();
+  res.json({ html, live });
+});
+
+api.post("/save", requireAuth, async (req, res) => {
+  const html = String(req.body?.html ?? "");
+  if (!html.trim()) {
+    return res.status(400).json({ error: "Пустой HTML" });
+  }
+  try {
+    const result = await publishHtml(html);
+    res.json({ ok: true, ...result });
+  } catch (e) {
+    res.status(e.status || 500).json({ error: e.message || "Ошибка сохранения" });
+  }
+});
+
 api.post("/upload", requireAuth, upload.single("file"), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "Файл не получен" });
@@ -250,22 +315,12 @@ api.post("/upload", requireAuth, upload.single("file"), async (req, res) => {
   if (!original.endsWith(".html") && req.file.mimetype !== "text/html") {
     return res.status(400).json({ error: "Нужен файл .html" });
   }
-  if (!validateHtml(req.file.buffer)) {
-    return res.status(400).json({ error: "Файл не похож на HTML-страницу" });
+  try {
+    const result = await publishHtml(req.file.buffer);
+    res.json({ ok: true, ...result });
+  } catch (e) {
+    res.status(e.status || 500).json({ error: e.message || "Ошибка загрузки" });
   }
-
-  const archivedAs = await archiveCurrentLive();
-  await fs.writeFile(LIVE_FILE, req.file.buffer);
-  const live = await liveInfo();
-
-  res.json({
-    ok: true,
-    archivedAs,
-    live,
-    message: archivedAs
-      ? `Страница обновлена. Предыдущая версия: archived/${archivedAs}`
-      : "Страница опубликована (архивировать было нечего)",
-  });
 });
 
 app.use(`${BASE_PATH}/api`, api);

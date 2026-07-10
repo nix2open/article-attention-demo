@@ -6,7 +6,7 @@
   <title>Обновление демо · Premium Ads</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #ffffff;
@@ -27,7 +27,7 @@
       background: var(--bg);
       color: var(--text);
       display: grid;
-      place-items: center;
+      place-items: start center;
       padding: 1.5rem;
     }
     .card {
@@ -36,6 +36,10 @@
       border: 1px solid var(--border);
       border-radius: 1.5rem;
       padding: 1.75rem;
+      transition: width 0.2s ease;
+    }
+    .card--editor {
+      width: min(100%, 1100px);
     }
     h1 {
       margin: 0 0 0.35rem;
@@ -66,7 +70,6 @@
       font: inherit;
     }
     button {
-      width: 100%;
       border: none;
       border-radius: 0.85rem;
       padding: 0.8rem 1rem;
@@ -76,13 +79,100 @@
       background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
       color: #fff;
     }
+    button.full { width: 100%; }
     button.secondary {
-      margin-top: 0.65rem;
       background: #fff;
       color: var(--text);
       border: 1px solid var(--border);
       font-weight: 500;
     }
+    button.ghost {
+      background: var(--accent-dim);
+      color: var(--accent);
+      border: 1px solid rgba(255, 110, 61, 0.2);
+      font-weight: 600;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .toolbar button {
+      flex: 1 1 auto;
+      min-width: 10rem;
+      padding: 0.65rem 0.85rem;
+      font-size: 0.88rem;
+    }
+    .tabs {
+      display: flex;
+      gap: 0.35rem;
+      margin-bottom: 1rem;
+      padding: 0.25rem;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+    }
+    .tab {
+      flex: 1;
+      padding: 0.55rem 0.75rem;
+      border: none;
+      border-radius: 0.65rem;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .tab.active {
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .editor-wrap {
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      overflow: hidden;
+      background: #fff;
+    }
+    .editor-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--muted);
+      background: #fafbfc;
+    }
+    #html-editor {
+      display: block;
+      width: 100%;
+      min-height: min(68vh, 720px);
+      margin: 0;
+      padding: 1rem;
+      border: none;
+      resize: vertical;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: #1e1e1e;
+      background: #fff;
+      tab-size: 2;
+    }
+    #html-editor:focus {
+      outline: none;
+      box-shadow: inset 0 0 0 2px rgba(255, 110, 61, 0.25);
+    }
+    .editor-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .editor-actions button { flex: 1 1 12rem; }
     .msg {
       margin: 0.9rem 0 0;
       padding: 0.75rem 0.85rem;
@@ -103,16 +193,19 @@
       line-height: 1.45;
     }
     .meta a { color: var(--accent); }
-    .hidden { display: none; }
+    .hidden { display: none !important; }
     ul { margin: 0.35rem 0 0; padding-left: 1.1rem; }
+    @media (max-width: 640px) {
+      .toolbar button, .editor-actions button { min-width: 100%; flex-basis: 100%; }
+    }
   </style>
 </head>
 <body>
-  <div class="card">
+  <div class="card" id="card">
     <h1>Обновление orange-демо</h1>
     <p class="sub">
-      Загрузите новый <code>index.html</code>. Текущая версия уйдёт в
-      <code>archived/</code> с UTC-меткой в имени файла.
+      Загрузите файл, скачайте актуальную версию или отредактируйте HTML прямо в браузере.
+      При публикации предыдущая версия уходит в <code>archived/</code>.
     </p>
 
     <section id="setup-view" class="hidden">
@@ -121,20 +214,46 @@
       <input id="setup-pass" type="password" autocomplete="new-password" />
       <label for="setup-pass2">Повтор пароля</label>
       <input id="setup-pass2" type="password" autocomplete="new-password" />
-      <button type="button" id="setup-btn">Сохранить пароль</button>
+      <button type="button" class="full" id="setup-btn">Сохранить пароль</button>
     </section>
 
     <section id="login-view" class="hidden">
       <label for="login-pass">Пароль</label>
       <input id="login-pass" type="password" autocomplete="current-password" />
-      <button type="button" id="login-btn">Войти</button>
+      <button type="button" class="full" id="login-btn">Войти</button>
     </section>
 
-    <section id="upload-view" class="hidden">
-      <label for="file">Файл страницы (.html)</label>
-      <input id="file" type="file" accept=".html,text/html" />
-      <button type="button" id="upload-btn">Загрузить и опубликовать</button>
-      <button type="button" class="secondary" id="logout-btn">Выйти</button>
+    <section id="main-view" class="hidden">
+      <div class="toolbar">
+        <button type="button" class="ghost" id="download-btn">Скачать актуальную версию</button>
+        <button type="button" class="secondary" id="logout-btn">Выйти</button>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab active" data-tab="upload" role="tab">Загрузка файла</button>
+        <button type="button" class="tab" data-tab="editor" role="tab">Редактор HTML</button>
+      </div>
+
+      <div id="panel-upload" class="panel active" role="tabpanel">
+        <label for="file">Файл страницы (.html)</label>
+        <input id="file" type="file" accept=".html,text/html" />
+        <button type="button" class="full" id="upload-btn">Загрузить и опубликовать</button>
+      </div>
+
+      <div id="panel-editor" class="panel" role="tabpanel">
+        <div class="editor-wrap">
+          <div class="editor-head">
+            <span>Редактирование <code>index.html</code></span>
+            <span id="editor-meta">—</span>
+          </div>
+          <textarea id="html-editor" spellcheck="false" aria-label="HTML-код страницы"></textarea>
+        </div>
+        <div class="editor-actions">
+          <button type="button" class="secondary" id="reload-editor-btn">Обновить из сервера</button>
+          <button type="button" id="save-editor-btn">Сохранить и опубликовать</button>
+        </div>
+      </div>
+
       <div class="meta" id="info"></div>
     </section>
 
@@ -144,10 +263,14 @@
   <script>
     const API = "/embed-admin/api";
     const msg = document.getElementById("msg");
+    const card = document.getElementById("card");
     const setupView = document.getElementById("setup-view");
     const loginView = document.getElementById("login-view");
-    const uploadView = document.getElementById("upload-view");
+    const mainView = document.getElementById("main-view");
     const info = document.getElementById("info");
+    const htmlEditor = document.getElementById("html-editor");
+    const editorMeta = document.getElementById("editor-meta");
+    let editorLoaded = false;
 
     function showMessage(text, type) {
       msg.textContent = text;
@@ -157,24 +280,47 @@
     function showView(name) {
       setupView.classList.add("hidden");
       loginView.classList.add("hidden");
-      uploadView.classList.add("hidden");
+      mainView.classList.add("hidden");
       if (name === "setup") setupView.classList.remove("hidden");
       if (name === "login") loginView.classList.remove("hidden");
-      if (name === "upload") uploadView.classList.remove("hidden");
+      if (name === "main") mainView.classList.remove("hidden");
+    }
+
+    function setActiveTab(tabName) {
+      document.querySelectorAll(".tab").forEach(function (btn) {
+        btn.classList.toggle("active", btn.dataset.tab === tabName);
+      });
+      document.querySelectorAll(".panel").forEach(function (panel) {
+        panel.classList.toggle("active", panel.id === "panel-" + tabName);
+      });
+      card.classList.toggle("card--editor", tabName === "editor");
+      if (tabName === "editor" && !editorLoaded) {
+        loadEditorSource().catch(function (e) {
+          showMessage(e.message, "err");
+        });
+      }
     }
 
     async function api(path, options) {
+      const isForm = options && options.body instanceof FormData;
       const res = await fetch(API + path, {
         credentials: "same-origin",
         ...options,
         headers: {
-          ...(options && options.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
+          ...(isForm ? {} : { "Content-Type": "application/json" }),
           ...(options && options.headers ? options.headers : {}),
         },
       });
-      const data = await res.json().catch(function () { return {}; });
-      if (!res.ok) throw new Error(data.error || "Ошибка запроса");
-      return data;
+      if (res.headers.get("content-type")?.includes("application/json")) {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Ошибка запроса");
+        return data;
+      }
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || "Ошибка запроса");
+      }
+      return res;
     }
 
     async function refreshInfo() {
@@ -184,6 +330,7 @@
       info.innerHTML =
         '<div><strong>Опубликовано:</strong> ' +
         (live.updatedAt ? new Date(live.updatedAt).toLocaleString("ru-RU") : "нет файла") +
+        (live.size ? " · " + Math.round(live.size / 1024) + " КБ" : "") +
         "</div>" +
         '<div><a href="' + data.liveUrl + '" target="_blank" rel="noopener">Открыть live-страницу</a></div>' +
         (archives.length
@@ -191,6 +338,32 @@
             archives.slice(0, 5).map(function (name) { return "<li><code>" + name + "</code></li>"; }).join("") +
             "</ul></div>"
           : "");
+      if (live.updatedAt) {
+        editorMeta.textContent = "Обновлено: " + new Date(live.updatedAt).toLocaleString("ru-RU");
+      }
+    }
+
+    async function loadEditorSource() {
+      const data = await api("/source");
+      htmlEditor.value = data.html;
+      editorLoaded = true;
+      if (data.live?.updatedAt) {
+        editorMeta.textContent = "Обновлено: " + new Date(data.live.updatedAt).toLocaleString("ru-RU");
+      }
+    }
+
+    async function downloadCurrent() {
+      const res = await api("/download");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "index.html";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showMessage("Файл index.html скачан.", "ok");
     }
 
     async function boot() {
@@ -203,9 +376,15 @@
         showView("login");
         return;
       }
-      showView("upload");
+      showView("main");
       await refreshInfo();
     }
+
+    document.querySelectorAll(".tab").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        setActiveTab(btn.dataset.tab);
+      });
+    });
 
     document.getElementById("setup-btn").addEventListener("click", async function () {
       try {
@@ -216,8 +395,8 @@
             confirm: document.getElementById("setup-pass2").value,
           }),
         });
-        showMessage("Пароль сохранён. Можно загружать страницу.", "ok");
-        showView("upload");
+        showMessage("Пароль сохранён.", "ok");
+        showView("main");
         await refreshInfo();
       } catch (e) {
         showMessage(e.message, "err");
@@ -231,7 +410,7 @@
           body: JSON.stringify({ password: document.getElementById("login-pass").value }),
         });
         showMessage("Вход выполнен.", "ok");
-        showView("upload");
+        showView("main");
         await refreshInfo();
       } catch (e) {
         showMessage(e.message, "err");
@@ -240,8 +419,18 @@
 
     document.getElementById("logout-btn").addEventListener("click", async function () {
       await api("/auth/logout", { method: "POST", body: "{}" });
+      editorLoaded = false;
+      htmlEditor.value = "";
       showView("login");
       showMessage("Вы вышли.", "ok");
+    });
+
+    document.getElementById("download-btn").addEventListener("click", async function () {
+      try {
+        await downloadCurrent();
+      } catch (e) {
+        showMessage(e.message, "err");
+      }
     });
 
     document.getElementById("upload-btn").addEventListener("click", async function () {
@@ -256,6 +445,38 @@
         const data = await api("/upload", { method: "POST", body: form });
         showMessage(data.message || "Страница обновлена.", "ok");
         fileInput.value = "";
+        editorLoaded = false;
+        await refreshInfo();
+      } catch (e) {
+        showMessage(e.message, "err");
+      }
+    });
+
+    document.getElementById("reload-editor-btn").addEventListener("click", async function () {
+      try {
+        await loadEditorSource();
+        showMessage("Код загружен с сервера.", "ok");
+      } catch (e) {
+        showMessage(e.message, "err");
+      }
+    });
+
+    document.getElementById("save-editor-btn").addEventListener("click", async function () {
+      const html = htmlEditor.value;
+      if (!html.trim()) {
+        showMessage("Редактор пуст.", "err");
+        return;
+      }
+      if (!confirm("Опубликовать изменения? Текущая версия уйдёт в archived/.")) {
+        return;
+      }
+      try {
+        const data = await api("/save", {
+          method: "POST",
+          body: JSON.stringify({ html: html }),
+        });
+        showMessage(data.message || "Изменения сохранены.", "ok");
+        editorLoaded = true;
         await refreshInfo();
       } catch (e) {
         showMessage(e.message, "err");
