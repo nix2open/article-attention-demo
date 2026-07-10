@@ -19,12 +19,20 @@ echo "==> Install dependencies, systemd, nginx"
 ssh -i "$SSH_KEY" "$SSH_HOST" bash -s <<'REMOTE'
 set -euo pipefail
 
-cd /opt/embed-orange-admin
+install_node() {
+  if command -v node >/dev/null 2>&1; then
+    return
+  fi
+  NODE_VER=v20.19.0
+  ARCH=linux-x64
+  TMP="/tmp/node-${NODE_VER}-${ARCH}.tar.xz"
+  curl -fsSL "https://nodejs.org/dist/${NODE_VER}/node-${NODE_VER}-${ARCH}.tar.xz" -o "$TMP"
+  tar -xJf "$TMP" -C /usr/local --strip-components=1
+  rm -f "$TMP"
+}
 
-if ! command -v node >/dev/null 2>&1; then
-  apt-get update -qq
-  apt-get install -y nodejs npm
-fi
+install_node
+cd /opt/embed-orange-admin
 
 npm install --omit=dev
 
